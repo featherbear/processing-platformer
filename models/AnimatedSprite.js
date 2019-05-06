@@ -20,8 +20,11 @@ models._AnimatedSprite = class {
   display(xpos, ypos) {
     this.frameCounter = (this.frameCounter + 1) % this.frameDuration;
     if (this.frameCounter == 0) this.frame = (this.frame + 1) % this.imageCount;
-    imageMode(CENTER);
+    push();
+    // imageMode(CENTER);
+    // scale(_.playerScale);
     image(this.images[this.frame], xpos, ypos);
+    pop();
   }
 
   get width() {

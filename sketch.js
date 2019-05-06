@@ -28,7 +28,8 @@ fallback.load(
     "models.Box": "models/box.js",
     "models.Ellipse": "models/round.js",
     "models.AnimatedSprite": "models/AnimatedSprite.js",
-    "models.Player": "models/Player.js"
+    "models.Player": "models/Player.js",
+    gameMap: "map.js"
   },
   {
     shim: {
@@ -38,27 +39,119 @@ fallback.load(
 );
 fallback.ready(startSketch);
 
-let bird;
-let ground;
-let player;
+let _ = {};
 
 function startSketch() {
-  let gameWidth = 1920;
-  let gameHeight = 1080;
-  window.setup = function setup() {
-    createCanvas(gameWidth, gameHeight);
-    frameRate(60);
-    bird = new models.Box(200, 200, 50, 80);
-    ground = new models.Box(gameWidth / 2, gameHeight, gameWidth, 60);
-
-    player = new models.Player(100, 200, 50, 80);
+  _.game = {
+    width: window.innerWidth,
+    height: window.innerHeight
   };
 
+  window.setup = function setup() {
+    _.cameraCoverage = {
+      x: 16,
+      y: 9
+    };
+
+    _.cellLength = min(
+      parseInt(_.game.width / _.cameraCoverage.x),
+      parseInt(_.game.height / _.cameraCoverage.y)
+    );
+
+    _.screen = {
+      width: _.cameraCoverage.x * _.cellLength,
+      height: _.cameraCoverage.y * _.cellLength
+    };
+
+    createCanvas(_.screen.width, _.screen.height);
+
+    _.rows = gameMap.length;
+    _.cols = gameMap[0].length;
+    if (_.cols < _.cameraCoverage.x || _.rows < _.cameraCoverage.y)
+      throw Error(
+        `Map not large enough: (${_.cols},${_.rows}) < (${_.cameraCoverage.x},${
+          _.cameraCoverage.y
+        })`
+      );
+
+    _.map = {
+      width: _.cols * _.cellLength,
+      height: _.rows * _.cellLength
+    };
+
+    _.playerScale = 1.5;
+
+    _.camera = new (class {
+      constructor() {
+        this._x_bound = _.map.width - _.screen.width + 1;
+        this._x = 0;
+        this._y = 0;
+      }
+
+      get x() {
+        return this._x;
+      }
+      set x(v) {
+        if (v <= 0) {
+          this._x = 0;
+        } else if (v >= this._x_bound) {
+          this._x = this._x_bound;
+        } else {
+          this._x = v;
+        }
+      }
+      get y() {
+        return this._y;
+      }
+      set y(v) {
+        throw Error("NotImplemented");
+      }
+    })();
+
+    console.log(_.rows, "x", _.cols);
+
+    frameRate(60);
+    _.bird = new models.Box(200, 200, 50, 80);
+    _.player = new models.Player(100, 200, 50, 80);
+  };
+
+  let z = 0;
   window.draw = function draw() {
     background(0);
-    bird.show();
-    ground.show();
-    player.show();
+
+    translate(-_.camera.x, -_.camera.y);
+    for (let i = 0; i < _.rows; i++) {
+      for (let j = 0; j < _.cols; j++) {
+        let elem = gameMap[i][j];
+        // rectMode(CORNER);
+
+        switch (elem) {
+          case "GRASS":
+          case "GROUND":
+            fill("#40A560");
+            break;
+          case "SPIKE":
+            fill("#FF0080");
+            break;
+          default:
+            fill("#A7A7A7");
+            break;
+        }
+        stroke("#FFF");
+        if (j * _.cellLength == 1440) {
+          fill("#FFFFFF");
+        }
+        rect(j * _.cellLength, i * _.cellLength, _.cellLength, _.cellLength);
+      }
+    }
+
+    _.bird.show();
+    // _.ground.show();
+    _.player.show();
+
+    if (++z % 50 == 0) {
+      console.log("Player at x: " + _.player.x);
+    }
   };
 
   ///

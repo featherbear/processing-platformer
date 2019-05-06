@@ -8,7 +8,7 @@ models.Box = class {
 
   show() {
     fill(255);
-    rectMode(CENTER);
+    // rectMode(CENTER);
     stroke("#AA0000");
     rect(this.x, this.y, this.w, this.h);
   }

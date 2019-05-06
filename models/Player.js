@@ -14,7 +14,7 @@ models.Player = class extends models._AnimatedSprite {
     this.evtRelease = null;
 
     this.direction = { x: null, y: null };
-
+    this.movementSpeed = 1.25;
     this.registerEvents();
   }
 
@@ -28,12 +28,12 @@ models.Player = class extends models._AnimatedSprite {
           case "d":
             this.direction.x = RIGHT;
             break;
-          case "w":
-            this.direction.y = UP;
-            break;
-          case "s":
-            this.direction.y = DOWN;
-            break;
+          // case "w":
+          //   this.direction.y = UP;
+          //   break;
+          // case "s":
+          //   this.direction.y = DOWN;
+          //   break;
           case " ":
             this.jump();
             break;
@@ -65,7 +65,7 @@ models.Player = class extends models._AnimatedSprite {
   }
   jump() {
     // if (!this.canJump) return;
-    console.log("TODO: JUMP");
+    console.warn("TODO: JUMP");
     this.y -= 50;
 
     // double jump?
@@ -73,19 +73,35 @@ models.Player = class extends models._AnimatedSprite {
   show() {
     this.display(this.x, this.y);
 
+    let centreX = _.screen.width / 2;
+    let centreY = _.screen.height / 2;
+
     if (this.direction.x == LEFT) {
-      this.x -= 1;
+      let newX = this.x - 5 * this.movementSpeed;
+      if (newX >= 0) {
+        // TODO: collision check
+
+        if (this.x < centreX) _.camera.x -= 5 * this.movementSpeed;
+        this.x = newX;
+      }
     }
 
     if (this.direction.x == RIGHT) {
-      this.x += 1;
+      let newX = this.x + 5 * this.movementSpeed;
+      if (newX + this.w < _.map.width) {
+        // TODO: collision check
+
+
+        if (this.x > centreX) _.camera.x += 5 * this.movementSpeed;
+        this.x = newX;
+      }
     }
     if (this.direction.y == UP) {
-      this.y -= 1;
+      this.y -= 5;
     }
 
     if (this.direction.y == DOWN) {
-      this.y += 1;
+      this.y += 5;
     }
   }
 };
