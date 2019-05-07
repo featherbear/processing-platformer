@@ -29,11 +29,14 @@ fallback.load(
     "models.Ellipse": "models/round.js",
     "models.AnimatedSprite": "models/AnimatedSprite.js",
     "models.Player": "models/Player.js",
+    "models.Image": "models/Image.js",
+    "models.BackgroundParallax": "models/Background.js",
     gameMap: "map.js"
   },
   {
     shim: {
-      "models.Player": ["models.AnimatedSprite"]
+      "models.Player": ["models.AnimatedSprite"],
+      "models.BackgroundParallax": ["models.Image"]
     }
   }
 );
@@ -113,11 +116,13 @@ function startSketch() {
     frameRate(60);
     _.bird = new models.Box(200, 200, 50, 80);
     _.player = new models.Player(100, 200, 50, 80);
+    _.background = new models.BackgroundParallax("bg/841032800_preview_Snow 4.png");
   };
 
   let z = 0;
   window.draw = function draw() {
     background(0);
+    _.background.show();
 
     translate(-_.camera.x, -_.camera.y);
     for (let i = 0; i < _.rows; i++) {
@@ -137,11 +142,11 @@ function startSketch() {
             fill("#A7A7A7");
             break;
         }
-        stroke("#FFF");
-        if (j * _.cellLength == 1440) {
-          fill("#FFFFFF");
+        if (elem) {
+          stroke("#FFF");
+
+          rect(j * _.cellLength, i * _.cellLength, _.cellLength, _.cellLength);
         }
-        rect(j * _.cellLength, i * _.cellLength, _.cellLength, _.cellLength);
       }
     }
 
