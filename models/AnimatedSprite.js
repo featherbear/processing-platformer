@@ -28,22 +28,20 @@ models._AnimatedSprite = class {
   }
 
   get width() {
-    return 50;
-    // console.log(this.images[0]);
-    // return this.images[0].width;
+    return this.images[0].width;
   }
 
   get height() {
-    return 80;
-    // return this.images[0].height;
+    return this.images[0].height;
   }
 };
 
 models.AnimatedSprite = class extends models._AnimatedSprite {
-  constructor(x, y) {
+  constructor(imagePrefix, count, x, y, ...args) {
     if (typeof x !== "number" || typeof y !== "number")
       throw Error("new AnimatedSprite(x, y)");
-    super("man", 3);
+    super(imagePrefix, count, ...args);
+
     this.x = x;
     this.y = y;
   }
