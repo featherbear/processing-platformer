@@ -85,7 +85,6 @@ models.Player = class extends models.AnimatedSprite {
       if (newX >= 0) {
         // TODO: collision check
 
-        if (this.x - _.camera.x < centreX) _.camera.x -= 5 * this.movementSpeed;
         this.x = newX;
       }
     }
@@ -95,7 +94,6 @@ models.Player = class extends models.AnimatedSprite {
       if (newX + this.width < _.map.width) {
         // TODO: collision check
 
-        if (this.x > centreX) _.camera.x += 5 * this.movementSpeed;
         this.x = newX;
       }
     }

@@ -31,7 +31,8 @@ fallback.load(
     "models.Player": "models/Player.js",
     "models.Image": "models/Image.js",
     "models.BackgroundParallax": "models/Background.js",
-    gameMap: "map.js"
+    gameMap: "map.js",
+    "models.Camera": "models/Camera.js"
   },
   {
     shim: {
@@ -51,6 +52,7 @@ function startSketch() {
   };
 
   window.setup = function setup() {
+    frameRate(60);
     _.cameraCoverage = {
       x: 16,
       y: 9
@@ -84,39 +86,21 @@ function startSketch() {
 
     _.playerScale = 1.5;
 
-    _.camera = new (class {
-      constructor() {
-        this._x_bound = _.map.width - _.screen.width + 1;
-        this._x = 0;
-        this._y = 0;
-      }
-
-      get x() {
-        return this._x;
-      }
-      set x(v) {
-        if (v <= 0) {
-          this._x = 0;
-        } else if (v >= this._x_bound) {
-          this._x = this._x_bound;
-        } else {
-          this._x = v;
-        }
-      }
-      get y() {
-        return this._y;
-      }
-      set y(v) {
-        throw Error("NotImplemented");
-      }
-    })();
-
     console.log(_.rows, "x", _.cols);
 
-    frameRate(60);
     _.bird = new models.Box(200, 200, 50, 80);
     _.player = new models.Player(100, 200, 50, 80);
-    _.background = new models.BackgroundParallax("bg/841032800_preview_Snow 4.png");
+
+    _.background = new models.BackgroundParallax(
+      "bg/841032800_preview_Snow 4.png"
+    );
+
+    {
+      let camera = new models.Camera(_.player.getX, _.player.getY);
+      camera.updateMap(_.map.width, _.map.height);
+      camera.updateScreen(_.screen.width, _.screen.height);
+      _.camera = camera;
+    }
   };
 
   let z = 0;

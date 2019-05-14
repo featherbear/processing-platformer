@@ -46,6 +46,18 @@ models.AnimatedSprite = class extends models._AnimatedSprite {
     this.y = y;
   }
 
+  get getX() {
+    return () => {
+      return this.x;
+    };
+  }
+
+  get getY() {
+    return () => {
+      return this.y;
+    };
+  }
+
   show() {
     this.display(this.x, this.y);
   }
