@@ -68,14 +68,13 @@ models.Player = class extends models.AnimatedSprite {
     this.y -= 50;
 
     // double jump?
-
   }
   show() {
     push();
     stroke("#0000FF");
     fill("#000000");
     rect(this.x, this.y, this.width, this.height);
-    
+
     this.display(this.x, this.y);
 
     let centreX = _.screen.width / 2;
@@ -86,7 +85,7 @@ models.Player = class extends models.AnimatedSprite {
       if (newX >= 0) {
         // TODO: collision check
 
-        if (this.x < centreX) _.camera.x -= 5 * this.movementSpeed;
+        if (this.x - _.camera.x < centreX) _.camera.x -= 5 * this.movementSpeed;
         this.x = newX;
       }
     }
